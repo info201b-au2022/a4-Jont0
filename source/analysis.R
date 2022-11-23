@@ -22,6 +22,27 @@ test_query2 <- function(num=6) {
 #----------------------------------------------------------------------------#
 # Your functions and variables might go here ... <todo: update comment>
 #----------------------------------------------------------------------------#
+#
+#How many males in the year 2000 were incarcerated in jail
+male_jail_2000 <- incarceration_data %>%
+  filter(year == "2000") %>%
+  select(male_jail_pop) %>%
+  summarise(male_jail_pop = sum(male_jail_pop))
+print(male_jail_2000)
+
+#In the year 2000, how many inmates were black?
+black_male_incarceration_2000 <- incarceration_data %>%
+  filter(year == "2000") %>%
+  select(black_prison_pop) %>%
+  summarise(black_prison_pop = sum(black_prison_pop))
+print(black_male_incarceration_2000)
+
+#In the year 2000 how many white inmates were incarcerated
+white_incarceration_2000 <- incarceration_data %>%
+  filter(year == "2000") %>%
+  select(white_prison_pop) %>%
+  summarise(white_prison_pop = sum(white_prison_pop))
+print(white_incarceration_2000)
 
 ## Section 3  ---- 
 #----------------------------------------------------------------------------#
@@ -31,6 +52,7 @@ test_query2 <- function(num=6) {
 # This function ... <todo:  update comment>
 get_year_jail_pop <- function() {
   # TODO: Implement this function 
+  total_population <- 
 return()   
 }
 

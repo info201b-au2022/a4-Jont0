@@ -1,7 +1,8 @@
+
 ---
-title: "Your A4 Report Title (TODO: Revise title)"
-author: "Your Name"
-date: '2022-11-01'
+title: "Incarceration Within the Justice System"
+author: "Jonathan To"
+date: '2022-11-18'
 output: html_document
 ---
 
@@ -12,7 +13,7 @@ source("../source/analysis.R")
 
 ## Abstract 
 [TODO: Include a short abstract (about 50 words)]
-
+My main concern that needs to be addressed relates to the biggest contributor of inequality within the justice system ranging from county to state data. This concern is very important since it will give everyone a better understanding on what is causing the inequality inside county and state jails and prisons, hopefully leading to a solution. With this solution, incarcerated individuals will be free of the inequalities they have to face. To address this concern, I plan on searching through the data sets provided and finding the patterns causing this awful problem.
 # Test (TODO: Remove before submission!!)
 ```{r echo=FALSE}
 q1_string <- test_query1()
@@ -35,10 +36,11 @@ print(sum)
 
 ## Introduction 
 [TODO]
+This report was created to expose the patterns of inequality found within the jails and prisons all over the United States. When looking at the provided data set, there are many problems underlying in the race of the inmates. The number of people of color can be found to be much higher than those that aren’t. This raises a concern on biases because of an individual’s skin color. This concern directly impacts all races, in or out of the prison system. This also directly had to do with the government and the police force. Indirectly, this concern impacts society revolving around areas where majority of their population are identifiable as Black, Asian, Latinx, etc. To get a better understanding of this problem, I will be answering specific questions such as, “the number of males incarcerated in the year 2000”, “in that same year, how many of them were black?” and finally, looking in 2015, ‘Has the number of incarcerated black individuals gone down?”. With this data, we will have a better understanding of how racist the United States prison system really is. 
 
 ## Data Summary 
 [TODO]
-
+Ever since I was a kid, I always knew the world was not fair. Whether it was because my parents wouldn’t get a specific toy for me or because of how people were treated based off their skin tone, it was just something I have always known. There is racism and inequality everywhere and when looking at the prison system, it is prevalent. For those reason, I decided to base my values around the number of males inmates within jails, the number of black individuals in jail and the number of white individuals in jail. In addition, to make these values easier to grasp, each value is based off of data from the year 2000. With the variables collected from these values, it will be easier to see the ratio between the different gender in jail, which will spur conversation relating to why the male population is much higher than females. With the data collected from the white and black population within jails, we will be able to see the ratio between the two and infer different reasons why this ratio might be. With these values it’ll be easier to understand the patterns of inequality within incarceration. 
 [TODO ... other sections ... See Canvas for details]
 
 _All the very best with your work!_
