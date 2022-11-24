@@ -1,5 +1,5 @@
 ---
-title: "Incarceration Within the Justice System"
+title: "The Real Problem Within incarceration: Racism"
 author: "Jonathan To"
 date: '2022-11-18'
 output: html_document
@@ -23,8 +23,6 @@ This report was created to expose the patterns of inequality found within the ja
 
 Ever since I was a kid, I always knew the world was not fair. Whether it was because my parents wouldn't get a specific toy for me or because of how people were treated based off their skin tone, it was just something I have always known. There is racism and inequality everywhere and when looking at the prison system, it is prevalent. For those reason, I decided to base my values around the number of males inmates within jails, the number of black individuals in jail and the number of white individuals in jail. In addition, to make these values easier to grasp, each value is based off of data from the year 2000. With the variables collected from these values, it will be easier to see the ratio between the different gender in jail, which will spur conversation relating to why the male population is much higher than females. With the data collected from the white and black population within jails, we will be able to see the ratio between the two and infer different reasons why this ratio might be. With these values it'll be easier to understand the patterns of inequality within incarceration.
 
-*All the very best with your work!*
-
 #### Growth of the U.S. Prison Population
 
 ```{r echo=FALSE, eval=TRUE, message=FALSE}
@@ -42,6 +40,7 @@ plot_jail_pop_for_us <- function()  {
   ggplot(get_year_jail_pop(), aes(x = year, y = total_jail_pop)) +
     geom_col(position = "dodge") +
     labs(title = "U.S. Jail Population Distribution (1970-2018)",
+         caption = "Figure 1. Representation of the changing Jail Population in the United States between the years 1970 to 2018.",
          x = "Year",
          y = "Total Inmate Population")
   
@@ -49,10 +48,6 @@ plot_jail_pop_for_us <- function()  {
 } 
 plot_jail_pop_for_us()
 ```
-
-##### Caption
-
-Figure 1. Representation of the changing Jail Population in the United States between the years 1970 to 2018.
 
 ##### Summary
 
@@ -77,9 +72,11 @@ plot_jail_pop_by_states <- function(states) {
   plot <- ggplot(data = plot_df) +
     geom_line(aes(x = year, y = total_jail_population, color = state)) +
     labs(
-      title = "Different State Jail Population (1970-2018)") +
+      title = "Different State Jail Population (1970-2018)",
+      caption = "Figure.2 Visualization of an array of State Jail Population between the years 1970 to 2018.") +
     ylab("Total Jail Population") + 
     xlab("Years") +
+     guides(fill = guide_legend(title = "States")) +
   scale_y_continuous(labels = scales::comma)
 return(plot)
 }
@@ -87,15 +84,11 @@ options(dplyr.summarise.inform = FALSE)
 plot_jail_pop_by_states(c("AL", "MD", "NY", "SD", "TN", "WA", "CA"))
 ```
 
-##### Caption
-
-Figure 2. Visualization of an array of State Jail Population between the years 1970 to 2018.
-
 ##### Summary
 
 With the help of Figure 2. we can answer the question, "Does total population affect total jail population in different States?" Through figure 2. I would say that yes, it does matter how big your state population is. The reason why I chose a state such as CA to be represented in this plot was because of its massive population total. Then I picked SD for comparison with a smaller populated state. For the five other states, I decided to pick states with a population size in between California and South Dakota. When looking at the figure 2. It is quite obvious that population size does in fact coincide with the Jail population total.
 
-#### Comparison of Patterns of Inequality
+#### Comparison of White and Black Incarcerated Population
 
 ```{r echo=FALSE, eval=TRUE, message=FALSE}
 region_plus_total_white_jail_pop <- function() {
@@ -134,13 +127,52 @@ white_black_plot <- function() {
       mapping = aes(x = population, y = region, fill = race), position = "dodge"
     ) +
     labs(
-      title = "White vs Black Jail Population by Region") +
+      title = "White vs Black Jail Population by Region",
+      caption = "Figure 3. Connection between the White and Black Inmates by the four regions."
+      ) +
     xlab("Population") +
     ylab("Region") +
     guides(fill = guide_legend(title = "Race")) +
-    scale_fill_hue(labels = c("White Population", "Black Population")) +
-    scale_fill_manual(values =c("FFFFFF", "CC99CC")) +
+    scale_fill_hue(labels = c("White Population", "Black Population")) 
   }
   
 white_black_plot()
 ```
+
+##### Summary
+
+Before creating Figure 3. I always pondered over the ratio between the number of Black to White inmates in jail. When looking at the Bar Chart after being created, I was quite surprised that the White Population was higher than the Black population in three out of the four regions. However, once I realized the population size of the total amount of Black and White individuals in those areas it made much more sense. Obviously, the West region would have much more White inmates since that region is heavily populated by individuals that are White. Same goes for the South and Midwest region. Even though the three regions are much higher in total White individuals, the Black inmate population isn't far off from the White inmate population. This shows that the Black population in those regions are being incarcerated in rates much higher than the White population in those same areas. This is an obvious sign of inequality in the justice system. On the other hand, when looking at the only outlier, the Northeast where majority of Black individuals reside, their inmate population is FOUR times higher than the White inmate population, which is insane.
+
+#### Map of Inequalities in Texas Concerning Incarceration
+
+```{r echo=FALSE, eval=TRUE, message=FALSE}
+texas_data <- function() {
+  all_texas_pop <- df %>%
+  filter(state == "TX") %>%
+  filter(year == "2018") %>%
+  select(total_jail_pop) %>%
+  summarise(total_jail_pop = sum(total_jail_pop)) %>%
+    return(all_texas_pop)
+}
+
+black_texas_pop <- function() {
+  btexas_pop <- df %>%
+  filter(state == "TX") %>%
+  filter(year == "2018") %>%
+  select(total_jail_pop) %>%
+  group_by(black_jail_pop) %>%
+  summarise(black_jail_pop = sum(black_jail_pop))
+  return(btexas_pop)
+}
+
+plot_texas <- ggplot(data = texas_data, values = "Total Texans Incarcerated", color = "white") +
+  scale_fill_continuous(name = "Texans in Jail (2018)", label = scales::comma) +
+  theme(legend.position = "right")
+labs(title = "Map of Black Texans Imprisioned vs Total Amount of Texans",
+     caption = "Figure 4. Illustrates the difference between the number of Imprisioned Black Texans to All Texans")
+plot_texas
+```
+
+##### Summary
+
+When going through all the data contributed by Vera-Institute, I immediately started wondering, "What State has the highest Black Population, and does it affect their overall Jail Population?". After some quick researching, I saw that in 2018, Texas had the largest number of Black Individuals. With that information, I decided to create my map around that statistic. By creating Figure 5. It is easy to see that the high Black Population does in fact matter, when looking at the total jail population. Through the map, it clearly illustrates the comparison between the total population in Texas and the population of Black inmates. This is a clear visualization of the racism and inequality that is happening in Texas, and the United States in general

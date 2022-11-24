@@ -71,6 +71,7 @@ plot_jail_pop_for_us <- function()  {
   ggplot(get_year_jail_pop(), aes(x = year, y = total_jail_pop)) +
     geom_col(position = "dodge") +
     labs(title = "U.S. Jail Population Distribution (1970-2018)",
+         caption = "Figure 1. Representation of the changing Jail Population in the United States between the years 1970 to 2018.",
          x = "Year",
          y = "Total Inmate Population")
   
@@ -101,9 +102,11 @@ plot_jail_pop_by_states <- function(states) {
   plot <- ggplot(data = plot_df) +
     geom_line(aes(x = year, y = total_jail_population, color = state)) +
     labs(
-      title = "Different State Jail Population (1970-2018)") +
+      title = "Different State Jail Population (1970-2018)", +
+    caption = "Figure.2 Visualization of an array of State Jail Population between the years 1970 to 2018.") +
     ylab("Total Jail Population") + 
     xlab("Years") +
+    guides(fill = guide_legend(title = "States")) +
     scale_y_continuous(labels = scales::comma)
   return(plot)
 }
@@ -141,7 +144,7 @@ region_plus_total_black_jail_pop()
 region_black_and_white_data <- left_join(region_plus_total_black_jail_pop(), region_plus_total_white_jail_pop())
 
 white_black_data <- region_black_and_white_data %>%
-  select(region, black_jail_population, white_jail_population) %>%
+  select(region, white_jail_population, black_jail_population) %>%
   gather(key = race, value = population, -region)
 
 #code for actual plot
@@ -152,12 +155,13 @@ white_black_plot <- function() {
       mapping = aes(x = population, y = region, fill = race), position = "dodge"
     ) +
     labs(
-      title = "White vs Black Jail Population by Region") +
+      title = "White vs Black Jail Population by Region",
+      caption = "Figure 3. Connection between the White and Black Inmates by the four regions."
+    ) +
     xlab("Population") +
     ylab("Region") +
     guides(fill = guide_legend(title = "Race")) +
-    scale_fill_hue(labels = c("Population", "White Population")) +
-    scale_fill_manual(values =c("FFFFFF", "CC99CC")) +
+    scale_fill_hue(labels = c("White Population", "Black Population")) 
 }
 
 white_black_plot()
@@ -171,4 +175,28 @@ white_black_plot()
 
 ## Load data frame ---- 
 
+texas_data <- function() {
+  all_texas_pop <- df %>%
+    filter(state == "TX") %>%
+    filter(year == "2018") %>%
+    select(total_jail_pop) %>%
+    summarise(total_jail_pop = sum(total_jail_pop)) %>%
+    return(all_texas_pop)
+}
 
+black_texas_pop <- function() {
+  btexas_pop <- df %>%
+    filter(state == "TX") %>%
+    filter(year == "2018") %>%
+    select(total_jail_pop) %>%
+    group_by(black_jail_pop) %>%
+    summarise(black_jail_pop = sum(black_jail_pop))
+  return(btexas_pop)
+}
+
+plot_texas <- ggplot(data = texas_data, values = "Total Texans Incarcerated", color = "white") +
+  scale_fill_continuous(name = "Texans in Jail (2018)", label = scales::comma) +
+  theme(legend.position = "right")
+labs(title = "Map of Black Texans Imprisioned vs Total Amount of Texans",
+     caption = "Figure 4. Illustrates the difference between the number of Imprisioned Black Texans to All Texans")
+plot_texas
