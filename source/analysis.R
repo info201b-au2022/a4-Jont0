@@ -1,4 +1,10 @@
 library(tidyverse)
+library(dplyr)
+library(ggplot2)
+
+#code to read incarceration data
+df <- read.csv("https://raw.githubusercontent.com/vera-institute/incarceration-trends/master/incarceration_trends.csv")
+View(df)
 
 # The functions might be useful for A4
 source("../source/a4-helpers.R")
@@ -24,21 +30,21 @@ test_query2 <- function(num=6) {
 #----------------------------------------------------------------------------#
 #
 #How many males in the year 2000 were incarcerated in jail
-male_jail_2000 <- incarceration_data %>%
+male_jail_2000 <- df %>%
   filter(year == "2000") %>%
   select(male_jail_pop) %>%
   summarise(male_jail_pop = sum(male_jail_pop))
 print(male_jail_2000)
 
 #In the year 2000, how many inmates were black?
-black_male_incarceration_2000 <- incarceration_data %>%
+black_male_incarceration_2000 <- df %>%
   filter(year == "2000") %>%
   select(black_prison_pop) %>%
   summarise(black_prison_pop = sum(black_prison_pop))
 print(black_male_incarceration_2000)
 
 #In the year 2000 how many white inmates were incarcerated
-white_incarceration_2000 <- incarceration_data %>%
+white_incarceration_2000 <- df %>%
   filter(year == "2000") %>%
   select(white_prison_pop) %>%
   summarise(white_prison_pop = sum(white_prison_pop))
@@ -50,17 +56,27 @@ print(white_incarceration_2000)
 # Your functions might go here ... <todo:  update comment>
 #----------------------------------------------------------------------------#
 # This function ... <todo:  update comment>
+
 get_year_jail_pop <- function() {
   # TODO: Implement this function 
-  total_population <- 
-return()   
+  total_population <- df %>%
+    group_by(year) %>%
+    filter(total_jail_pop != "NA") %>%
+    summarise(total_jail_pop =sum(total_jail_pop))
+  return(total_population)   
 }
 
 # This function ... <todo:  update comment>
 plot_jail_pop_for_us <- function()  {
+  ggplot(get_year_jail_pop(), aes(x = year, y = total_jail_pop)) +
+    geom_col(position = "dodge") +
+    labs(title = "U.S. Jail Population Distribution (1970-2018)",
+         x = "Year",
+         y = "Total Inmate Population")
+  
   # TODO: Implement this function 
-  return()   
 } 
+plot_jail_pop_for_us()
 
 ## Section 4  ---- 
 #----------------------------------------------------------------------------#
@@ -69,12 +85,82 @@ plot_jail_pop_for_us <- function()  {
 # See Canvas
 #----------------------------------------------------------------------------#
 
+get_jail_pop_by_states <- function(states) {
+  visualization_df <- df %>%
+    filter(state %in% states) %>%
+    group_by(year, state) %>%
+    summarise(total_jail_population = sum(total_jail_pop, na.rm = TRUE))
+  return(visualization_df)
+}
+
+get_jail_pop_by_states(c("AL", "MD", "NY", "SD", "TN", "WA", "CA"))
+
+plot_jail_pop_by_states <- function(states) {
+  plot_df <- get_jail_pop_by_states(states)
+  
+  plot <- ggplot(data = plot_df) +
+    geom_line(aes(x = year, y = total_jail_population, color = state)) +
+    labs(
+      title = "Different State Jail Population (1970-2018)") +
+    ylab("Total Jail Population") + 
+    xlab("Years") +
+    scale_y_continuous(labels = scales::comma)
+  return(plot)
+}
+options(dplyr.summarise.inform = FALSE)
+plot_jail_pop_by_states(c("AL", "MD", "NY", "SD", "TN", "WA", "CA"))
+
 ## Section 5  ---- 
 #----------------------------------------------------------------------------#
 # <variable comparison that reveals potential patterns of inequality>
 # Your functions might go here ... <todo:  update comment>
 # See Canvas
 #----------------------------------------------------------------------------#
+region_plus_total_white_jail_pop <- function() {
+  dv <- df %>%
+    drop_na() %>%
+    group_by(region) %>%
+    summarize(white_jail_population = sum(white_jail_pop)) %>%
+    select(region, white_jail_population)
+  return(dv)
+}
+
+region_plus_total_white_jail_pop()
+
+region_plus_total_black_jail_pop <- function() {
+  dv <- df %>%
+    drop_na() %>%
+    group_by(region) %>%
+    summarize(black_jail_population = sum(black_jail_pop)) %>%
+    select(region, black_jail_population)
+  return(dv)
+}
+
+region_plus_total_black_jail_pop()
+
+region_black_and_white_data <- left_join(region_plus_total_black_jail_pop(), region_plus_total_white_jail_pop())
+
+white_black_data <- region_black_and_white_data %>%
+  select(region, black_jail_population, white_jail_population) %>%
+  gather(key = race, value = population, -region)
+
+#code for actual plot
+
+white_black_plot <- function() {
+  ggplot(white_black_data) +
+    geom_col(
+      mapping = aes(x = population, y = region, fill = race), position = "dodge"
+    ) +
+    labs(
+      title = "White vs Black Jail Population by Region") +
+    xlab("Population") +
+    ylab("Region") +
+    guides(fill = guide_legend(title = "Race")) +
+    scale_fill_hue(labels = c("Population", "White Population")) +
+    scale_fill_manual(values =c("FFFFFF", "CC99CC")) +
+}
+
+white_black_plot()
 
 ## Section 6  ---- 
 #----------------------------------------------------------------------------#
